@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar-brand { font-weight: 700; }
+        .page-header { background: linear-gradient(135deg, #0d6efd, #6610f2); color: white; padding: 2rem 0; margin-bottom: 2rem; }
+        .card { border: none; box-shadow: 0 2px 15px rgba(0,0,0,0.08); border-radius: 14px; }
+        .info-label { font-weight: 600; color: #6c757d; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-value { font-size: 1rem; color: #212529; margin-top: 4px; }
+        .badge-vip { background-color: #6f42c1; }
+        .badge-gold { background-color: #fd7e14; }
+        .badge-silver { background-color: #6c757d; }
+        .badge-normal { background-color: #198754; }
+        .grade-badge { font-size: 0.9rem; padding: 6px 16px; }
+        .avatar-circle { width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 2rem; font-weight: 700; }
+        .info-divider { border-top: 1px solid #e9ecef; padding-top: 1.5rem; margin-top: 1.5rem; }
+        .section-title { font-size: 0.875rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #6c757d; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+<!--네비게이션-->
+<nav class="navbar navbar-expand-lg naver-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-people-fill me-2"></i>고객 관리 시스템
+        </a>
+        <div class="ms-auto">
+            <a class="btn btn-light btn-sm" th:href="@{/}">
+                <i class="bi bi-list-ul me-1"></i>목록으로
+            </a>
+        </div>
+    </div>
+</nav>
+<!--헤더부분-->
+<div class="page-header">
+    <div class="container">
+        <h2 class="mb-1">
+            <i class="bi bi-list-ul me-2"></i>고객 상세보기
+        </h2>
+        <p class="mb-0 opacity-75">
+            고객 번호 : <strong id="headerCid"></strong>
+        </p>
+    </div>
+</div>
+<!--본문내용-->
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!--로딩상태(스크립트 동작 전)-->
+            <div id="loadingArea" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+            <!--스크립트를 이용해서 데이터를 받아온 후-->
+            <div id="customerCard" class="card p-4 mb-4" style="display:none;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4"><!--프로필-->
+                        <div class="avatar-circle me-4">
+                            <span id="avatarChar">?</span>
+                        </div>
+                        <div>
+                            <h3 class="mb-1 fw-bold" id="custName">연습</h3>
+                            <span class="badge grade-badge rounded-pill" id="gradeBadge">VIP</span>
+                        </div>
+                        <div class="ms-auto d-flex gap-2">
+                            <a id="editBtnTop" href="#" class="btn btn-warning">
+                                <i class="bi bi-pencil-fill me-1"></i>수정
+                            </a>
+                            <button class="btn btn-danger" id="deleteBtnTop">
+                                <i class="bi bi-trash-fill me-1"></i>삭제
+                            </button>
+                        </div>
+                    </div>
+                    <!--기본정보-->
+                    <div class="section-title">
+                        <i class="bi bi-person me-1"></i>기본 정보
+                    </div>
+                    <div class="row g-4 mb-3">
+                        <div class="col-md-6">
+                            <div class="info-label">이메일</div>
+                            <div class="info-value">
+                                <i class="bi bi-envelope-fill text-primary me-1"></i>
+                                <span id="custEmail">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-label">연락처</div>
+                            <div class="info-value">
+                                <i class="bi bi-telephone-fill text-success me-1"></i>
+                                <span id="custPhone">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--회사정보-->
+                    <div class="info-divider">
+                        <div class="section-title">
+                            <i class="bi bi-building me-1"></i>회사 정보
+                        </div>
+                        <div class="row g-4 mb-3">
+                            <div class="col-md-6"><!--칸-->
+                                <div class="info-label">회사명</div>
+                                <div class="info-value">
+                                    <i class="bi bi-building-fill text-warning me-1"></i>
+                                    <span id="custCompany">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-label">주소</div>
+                                <div class="info-value">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                    <span id="custAddress">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--메모(내용이 있으면 출력, 없으면 생략)-->
+                    <div class="info-divider" id="memoSection" style="display: none;">
+                        <div class="section-title">
+                            <i class="bi bi-card-text me-1"></i>메모
+                        </div>
+                        <div class="bg-light rounded-3 p-3">
+                            <p class="mb-0" id="custMemo" style="white-space:pre-wrap;"> </p>
+                        </div>
+                    </div>
+                    <!--등록일-->
+                    <div class="info-divider">
+                        <div class="info-label">등록일</div>
+                        <div class="info-value">
+                            <i class="bi bi-calendar-check-fill text-info me-1"></i>
+                            <span id="custRegDate">-</span>
+                        </div>
+                    </div>
+                    <!--버튼-->
+                    <div id="bottomBtns" class="d-flex justify-content-between"
+                    style="display:none!important;">
+                        <a href="/" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-1"></i>목록으로
+                        </a>
+                        <div class="d-flex gap-2">
+                            <a id="editBtnBottom" href="#" class="btn btn-warning btn-lg">
+                                <i class="bi bi-pencil-fill me-1"></i>수정
+                            </a>
+                            <button class="btn btn-danger btn-lg" id="deleteBtnBottom">
+                                <i class="bi bi-trash-fill me-1"></i>삭제
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--삭제 확인 모달-->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-ceentered">
+        <div class="modal-content">
+            <div class="modal-header border-0"><!--제목-->
+                <h5 class="modal-title text-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>고객 삭제
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body"><!--메세지-->
+                정말로 <strong id="deleteModalName"></strong>을 삭제하시겠습니까? 작업후 되돌릴 수 없습니다.
+            </div>
+            <div class="modal-footer border-0"><!--버튼-->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    취소
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    삭제
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/basic.js"></script>
+<script th:inline="javascript">
+    //jquery를 작성할 때는 안에
+    //function 메소들 생성시 안에 생성하면 현재페이지에서만
+    //$(document).ready(function(){
+    //});
+    //일반 스크립트는 밖에
+    //function 메소들 생성시 안에 생성하면 외부페이지(js파일에 저장))
+
+    //공용변수 선언
+    const cid = /*[[${customer.cid}]]*/ null;
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    const gradeColorMap = {
+        VIP: 'badge-vip',
+        GOLD: 'badge-gold',
+        SILVER: 'badge-silver',
+        NORMAL: 'badge-normal'
+    };
+
+    $(document).ready(function(){
+        $('#deleteBtnTop, #deleteBtnBottom').on('click', showDeleteModal);
+        //삭제대화상자에서 삭제버튼을 클릭했을 때(삭제요청)
+        $('#confirmDeleteBtn').on('click', function(){
+            $.ajax({
+                url: '/api/customers/'+cid,
+                method: 'DELETE',
+
+                success:function(msg){
+                    alert(msg);
+                    location.href="/";
+                },
+                error:function(){
+                    alert('삭제 중 오류가 발생하였습니다.');
+                }
+            });
+        });
+
+
+        loadCustomer(); //일반스크립트는 동작은 아래쪽에 작성, jquery는 동작은 위에 작성
+    });
+
+    //함수선언
+    //해당 데이터를 요청
+
+
+
+
+</script>
+</body>
+</html>
